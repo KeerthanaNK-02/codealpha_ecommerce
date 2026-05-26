@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sellora</title>
+
+    <style>
+
+        body{
+            margin:0;
+            font-family:Arial;
+            background:#000;
+            color:white;
+            transition:0.3s;
+        }
+
+        body.dark{
+            background:#f5f5f5;
+            color:black;
+        }
+
+        /* NAVBAR */
+
+        .navbar{
+            background:#09111f;
+            color:white;
+            padding:15px 20px;
+            display:flex;
+            align-items:center;
+        }
+
+        .nav-left{
+            width:33%;
+            display:flex;
+            align-items:center;
+            gap:15px;
+        }
+
+        .nav-center{
+            width:34%;
+            text-align:center;
+        }
+
+        .nav-right{
+            width:33%;
+            text-align:right;
+        }
+
+        /* RIGHT LINKS */
+
+        .nav-right,
+        .nav-right a{
+            color:white;
+            margin-left:10px;
+            text-decoration:none;
+            font-size:14px;
+        }
+
+        body.dark .nav-right,
+        body.dark .nav-right a{
+            color:black;
+        }
+
+        /* LOGO */
+
+        .logo{
+            font-size:42px;
+            font-family:Georgia, serif;
+            font-weight:bold;
+            color:#ff9900;
+            letter-spacing:2px;
+        }
+
+        /* DARK MODE ICON */
+
+        .toggle{
+            cursor:pointer;
+            font-size:28px;
+        }
+
+        /* SEARCH */
+
+        .search-box input{
+            padding:8px 12px;
+            width:220px;
+            border-radius:20px;
+            border:none;
+            outline:none;
+            font-size:16px;
+        }
+
+        /* COUNT */
+
+        #cart-count,
+        #wishlist-count{
+            background:red;
+            color:white;
+            padding:2px 6px;
+            border-radius:50%;
+            font-size:12px;
+        }
+
+        /* SEARCH TEXT */
+
+        .search-text{
+            text-align:center;
+            margin-top:15px;
+            font-size:18px;
+        }
+
+        /* PRODUCTS */
+
+        .container{
+            display:flex;
+            flex-wrap:wrap;
+            justify-content:center;
+            gap:30px;
+            padding:30px;
+        }
+
+        .card{
+            position:relative;
+            background:#1b1b1b;
+            border-radius:12px;
+            padding:15px;
+            width:220px;
+            text-align:center;
+            transition:0.3s;
+        }
+
+        body.dark .card{
+            background:white;
+            color:black;
+        }
+
+        .card:hover{
+            transform:scale(1.04);
+        }
+
+        .card img{
+            width:100%;
+            height:250px;
+            object-fit:cover;
+            border-radius:10px;
+        }
+
+        .card h3{
+            margin-top:15px;
+            font-size:20px;
+        }
+
+        .price{
+            color:limegreen;
+            font-weight:bold;
+            font-size:18px;
+        }
+
+        .btn{
+            background:#ff9900;
+            border:none;
+            padding:12px;
+            margin-top:10px;
+            width:100%;
+            cursor:pointer;
+            border-radius:6px;
+            font-size:16px;
+            color:white;
+            font-weight:bold;
+        }
+
+        /* HEART */
+
+        .heart{
+            position:absolute;
+            top:10px;
+            right:15px;
+            font-size:25px;
+            cursor:pointer;
+            color:gray;
+        }
+
+        .heart.active{
+            color:red;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+
+    <!-- LEFT -->
+
+    <div class="nav-left">
+
+        <!-- DARK MODE -->
+
+        <span class="toggle" onclick="toggleMode()">🌙</span>
+
+        <!-- SEARCH -->
+
+        <div class="search-box">
+
+            <input type="text"
+                   id="searchInput"
+                   placeholder="Search products..."
+                   onkeyup="searchProducts()">
+
+        </div>
+
+    </div>
+
+    <!-- CENTER -->
+
+    <div class="nav-center">
+
+        <div class="logo">Sellora</div>
+
+    </div>
+
+    <!-- RIGHT -->
+
+    <div class="nav-right">
+
+        {% if user.is_authenticated %}
+
+            Hello {{ user.username }} |
+
+            <a href="/logout" onclick="showLogoutMessage()">
+                Logout
+            </a>
+
+        {% else %}
+
+            <a href="/login">Login</a> |
+
+            <a href="/register">Register</a>
+
+        {% endif %}
+
+        |
+
+        <a href="/cart">
+            Cart (<span id="cart-count">0</span>)
+        </a>
+
+        |
+
+        <a href="/wishlist">
+            Wishlist (<span id="wishlist-count">0</span>)
+        </a>
+
+        |
+
+        <a href="/my-orders">
+            My Orders
+        </a>
+
+    </div>
+
+</div>
+
+<!-- SEARCH RESULT -->
+
+<div class="search-text" id="searchText"></div>
+
+<!-- PRODUCTS -->
+
+<div class="container">
+
+{% for product in products %}
+
+    <div class="card">
+
+        <!-- HEART -->
+
+        <span class="heart"
+              onclick="toggleWishlist(this,
+              '{{ product.name|escapejs }}')">
+
+            ❤
+
+        </span>
+
+        <!-- PRODUCT -->
+
+        <a href="/product/{{ product.id }}/"
+           style="text-decoration:none;
+           color:inherit;">
+
+            {% if product.image %}
+
+                <img src="{{ product.image.url }}">
+
+            {% endif %}
+
+            <h3>{{ product.name }}</h3>
+
+            <p class="price">
+                ₹{{ product.price }}
+            </p>
+
+        </a>
+
+        <!-- BUTTON -->
+
+        <button class="btn"
+                onclick="addToCart(
+                '{{ product.name|escapejs }}',
+                '{{ product.price }}')">
+
+            Add to Cart
+
+        </button>
+
+    </div>
+
+{% endfor %}
+
+</div>
+
+<script>
+
+/* UPDATE COUNTS */
+
+function updateCounts(){
+
+    let cart =
+        JSON.parse(localStorage.getItem("cart")) || [];
+
+    let wishlist =
+        JSON.parse(localStorage.getItem("wishlist")) || [];
+
+    let totalQty = 0;
+
+    cart.forEach(item => {
+
+        totalQty += item.quantity;
+
+    });
+
+    document.getElementById("cart-count")
+        .innerText = totalQty;
+
+    document.getElementById("wishlist-count")
+        .innerText = wishlist.length;
+}
+
+/* ADD TO CART */
+
+function addToCart(name, price){
+
+    let cart =
+        JSON.parse(localStorage.getItem("cart")) || [];
+
+    let found = false;
+
+    cart.forEach(item => {
+
+        if(item.name === name){
+
+            item.quantity += 1;
+
+            found = true;
+        }
+
+    });
+
+    if(!found){
+
+        cart.push({
+
+            name: name,
+            price: parseFloat(price),
+            quantity: 1
+
+        });
+    }
+
+    localStorage.setItem(
+        "cart",
+        JSON.stringify(cart)
+    );
+
+    updateCounts();
+
+    alert(name + " added to cart!");
+}
+
+/* WISHLIST */
+
+function toggleWishlist(el, name){
+
+    let wishlist =
+        JSON.parse(localStorage.getItem("wishlist")) || [];
+
+    if(wishlist.includes(name)){
+
+        wishlist =
+            wishlist.filter(item => item !== name);
+
+        el.classList.remove("active");
+
+    }else{
+
+        wishlist.push(name);
+
+        el.classList.add("active");
+    }
+
+    localStorage.setItem(
+        "wishlist",
+        JSON.stringify(wishlist)
+    );
+
+    updateCounts();
+}
+
+/* LOGOUT MESSAGE */
+
+function showLogoutMessage(){
+
+    alert("You have been logged out.\nPlease login to continue shopping.");
+
+    localStorage.removeItem("wishlist");
+    localStorage.removeItem("cart");
+}
+
+/* SEARCH */
+
+function searchProducts(){
+
+    let input =
+        document.getElementById("searchInput")
+        .value
+        .toLowerCase();
+
+    let cards =
+        document.querySelectorAll(".card");
+
+    let searchText =
+        document.getElementById("searchText");
+
+    if(input.trim() !== ""){
+
+        searchText.innerHTML =
+            "Showing results for: <b>" +
+            input +
+            "</b>";
+
+    }else{
+
+        searchText.innerHTML = "";
+    }
+
+    cards.forEach(card => {
+
+        let name =
+            card.querySelector("h3")
+            .innerText
+            .toLowerCase();
+
+        if(name.includes(input)){
+
+            card.style.display = "block";
+
+        }else{
+
+            card.style.display = "none";
+        }
+
+    });
+}
+
+/* DARK MODE */
+
+function toggleMode(){
+
+    document.body.classList.toggle("dark");
+
+    localStorage.setItem(
+        "mode",
+        document.body.classList.contains("dark")
+    );
+}
+
+/* ONLOAD */
+
+window.onload = function(){
+
+    updateCounts();
+
+    if(localStorage.getItem("mode") === "true"){
+
+        document.body.classList.add("dark");
+    }
+
+    let wishlist =
+        JSON.parse(localStorage.getItem("wishlist")) || [];
+
+    document.querySelectorAll(".card").forEach(card => {
+
+        let name =
+            card.querySelector("h3").innerText;
+
+        if(wishlist.includes(name)){
+
+            card.querySelector(".heart")
+                .classList.add("active");
+        }
+
+    });
+}
+
+</script>
+
+</body>
+</html>

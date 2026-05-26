@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product Detail</title>
+
+    <style>
+        
+        /* DARK MODE */
+
+body {
+    background: black;
+    color: white;
+}
+
+body.dark {
+    background: #f5f5f5;
+    color: black;
+}
+
+/* FIX CART/WISHLIST TEXT VISIBILITY */
+
+.item,
+.cart-item,
+.order-box,
+.wishlist-item,
+.checkout-box {
+    color: white;
+}
+
+body.dark .item,
+body.dark .cart-item,
+body.dark .order-box,
+body.dark .wishlist-item,
+body.dark .checkout-box {
+    color: black;
+}
+a{
+    color:white;
+}
+
+body.dark a{
+    color:black;
+}
+
+        /* NAVBAR */
+        .navbar {
+            background: #0f1a26;
+            color: white;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-left { width: 33%; }
+
+        .nav-center {
+            width: 34%;
+            text-align: center;
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        .nav-right {
+            width: 33%;
+            text-align: right;
+        }
+
+        .nav-right a {
+            color: white;
+            margin-left: 10px;
+            text-decoration: none;
+        }
+
+        .toggle {
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        /* COUNT BADGE */
+        #cart-count, #wishlist-count {
+            background: red;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 50%;
+            font-size: 12px;
+        }
+
+        /* PRODUCT UI */
+        .container {
+            display: flex;
+            gap: 30px;
+            padding: 30px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        img {
+            width: 300px;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .details {
+            max-width: 400px;
+        }
+
+        button {
+            background: orange;
+            border: none;
+            padding: 10px 15px;
+            margin-top: 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        a.back {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+
+    <div class="nav-left"></div>
+
+    <div class="nav-center">
+        Sellora
+    </div>
+
+    <div class="nav-right">
+
+        <a href="/">Home</a>
+
+        | <a href="/cart">Cart (<span id="cart-count">0</span>)</a>
+
+        | <a href="/wishlist">Wishlist (<span id="wishlist-count">0</span>)</a>
+
+        | <a href="/my-orders">My Orders</a>
+
+        <span class="toggle" onclick="toggleMode()">🌙</span>
+    </div>
+
+</div>
+
+<h1 style="text-align:center;">{{ product.name }}</h1>
+
+<div class="container">
+
+    {% if product.image %}
+        <img src="{{ product.image.url }}">
+    {% endif %}
+
+    <div class="details">
+        <h2>₹{{ product.price }}</h2>
+        <p>{{ product.description }}</p>
+
+        <button onclick="addToCart('{{ product.name|escapejs }}', '{{ product.price }}')">
+            Add to Cart
+        </button>
+    </div>
+
+</div>
+
+<a href="/" class="back">⬅ Back to Store</a>
+
+<script>
+/* ADD TO CART */
+function addToCart(name, price) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    cart.push({
+        name: name,
+        price: parseFloat(price)
+    });
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    updateCounts();
+    alert(name + " added to cart!");
+}
+
+/* UPDATE COUNTS */
+function updateCounts(){
+    let c = JSON.parse(localStorage.getItem("cart")) || [];
+    let w = JSON.parse(localStorage.getItem("wishlist")) || [];
+
+    document.getElementById("cart-count").innerText = c.length;
+    document.getElementById("wishlist-count").innerText = w.length;
+}
+
+/* DARK MODE */
+function toggleMode(){
+    document.body.classList.toggle("dark");
+    localStorage.setItem("mode", document.body.classList.contains("dark"));
+}
+
+/* ON LOAD */
+updateCounts();
+
+if(localStorage.getItem("mode") === "true"){
+    document.body.classList.add("dark");
+}
+</script>
+
+</body>
+</html>

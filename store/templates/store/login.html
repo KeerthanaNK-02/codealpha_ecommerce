@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login - Sellora</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body{
+            background:#0f1720;
+            height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+        }
+
+        /* MAIN BOX */
+
+        .login-container{
+            width:380px;
+            background:white;
+            padding:40px 35px;
+            border-radius:16px;
+            text-align:center;
+            box-shadow:0 8px 25px rgba(0,0,0,0.25);
+        }
+
+        /* LOGO */
+
+        .logo{
+            font-size:34px;
+            font-weight:bold;
+            color:#ff9900;
+            margin-bottom:10px;
+        }
+
+        /* NAV LINKS */
+
+        .top-links{
+            margin-bottom:30px;
+        }
+
+        .top-links a{
+            text-decoration:none;
+            color:#ff9900;
+            font-weight:bold;
+            margin:0 8px;
+            transition:0.3s;
+        }
+
+        .top-links a:hover{
+            opacity:0.8;
+        }
+
+        /* TITLE */
+
+        h2{
+            color:#ff9900;
+            margin-bottom:25px;
+            font-size:28px;
+        }
+
+        /* LABELS */
+
+        label{
+            display:block;
+            text-align:left;
+            margin-bottom:8px;
+            font-weight:bold;
+            color:#333;
+        }
+
+        /* INPUTS */
+
+        input{
+            width:100%;
+            padding:12px;
+            margin-bottom:18px;
+            border:1px solid #ccc;
+            border-radius:8px;
+            font-size:15px;
+            outline:none;
+            transition:0.3s;
+        }
+
+        input:focus{
+            border-color:#ff9900;
+            box-shadow:0 0 5px rgba(255,153,0,0.4);
+        }
+
+        /* BUTTON */
+
+        button{
+            width:100%;
+            padding:12px;
+            border:none;
+            border-radius:8px;
+            background:#ff9900;
+            color:white;
+            font-size:16px;
+            font-weight:bold;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        button:hover{
+            background:#ff9900;
+            color:white;
+        }
+
+        /* REGISTER LINK */
+
+        .register-link{
+            margin-top:20px;
+            font-size:15px;
+        }
+
+        .register-link a{
+            text-decoration:none;
+            color:#ff9900;
+            font-weight:bold;
+        }
+
+        .register-link a:hover{
+            text-decoration:underline;
+        }
+
+        /* MESSAGE */
+
+        .message{
+            background:#fff4e5;
+            color:#ff9900;
+            padding:12px;
+            border-radius:8px;
+            margin-bottom:20px;
+            font-weight:bold;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="login-container">
+
+    <div class="logo">Sellora</div>
+
+    <div class="top-links">
+        <a href="/">Home</a>
+        <a href="/register">Register</a>
+    </div>
+
+    <h2>Login</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>Username</label>
+        <input type="text" name="username" required>
+
+        <label>Password</label>
+        <input type="password" name="password" required>
+
+        <button type="submit">Login</button>
+    </form>
+
+    <div class="register-link">
+        Create new account?
+        <a href="/register">Register</a>
+    </div>
+
+</div>
+
+</body>
+</html>
